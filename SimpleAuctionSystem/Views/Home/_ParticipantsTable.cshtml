@@ -1,0 +1,27 @@
+﻿
+@model IEnumerable<SimpleAuctionSystem.ViewModels.ParticipantViewModel>
+<div class="table-responsive" style="padding-top: 20px;">
+    <table class="table table-bordered table-striped" style="width: 100%;">
+        <thead style="width: 100px !important;">
+            <tr>
+                <th style="width: 100px !important;" class="text-center">Participant Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="width: 100px !important;" class="text-center">
+                            @item.ParticipantName
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+
+

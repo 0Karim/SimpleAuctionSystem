@@ -1,0 +1,72 @@
+﻿@model SimpleAuctionSystem.ViewModels.ItemViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="MainForm">
+    @Html.Partial("_PartialFormNewItem", Model)
+</div>
+
+<div id="MainTable">
+    @Html.Partial("_PartialItemsTable", Model.itemsList)
+</div>
+
+<div align="right">
+    <button type="submit" onclick="GetBiddersForm()" id="Btn-FormBidders" class="btn btn-success">Move To Bidders</button>
+</div>
+
+
+<div align="right">
+    <button type="submit" onclick="GetAuctionForm()" style="display:none" id="Btn-FormAuction" class="btn btn-success">Move To Auction Process</button>
+</div>
+
+
+
+<script src="~/Scripts/Items_Js/ItemsJs.js"></script>
+<script src="~/Scripts/Participant_Js/ParticipantJs.js"></script>
+
+<script>
+    function GetBiddersForm() {
+        debugger;
+        $('#MainForm').html('');
+        $('#MainTable').html('');
+        $('#Btn-FormBidders').css('display', 'none');
+        $.ajax({
+
+            url: "/Home/GetParticipantForm",
+            type: "GET",
+            dataType: "html",
+            success: function (response) {
+                $('#MainForm').html(response);
+                $('#Btn-FormAuction').css('display', 'block');
+            },
+            error: function (response) {
+                alert(response.Message);
+            }
+        });
+    }
+
+
+    function GetAuctionForm() {
+        debugger;
+        $('#MainForm').html('');
+        $('#MainTable').html('');
+        $('#Btn-FormAuction').css('display', 'none');
+
+        $.ajax({
+
+            url: "/Home/GetAuctionForm",
+            type: "GET",
+            dataType: "html",
+            success: function (response) {
+                $('#MainForm').html(response);
+            },
+            error: function (response) {
+                alert(response.Message);
+            }
+        });
+    }
+
+</script>

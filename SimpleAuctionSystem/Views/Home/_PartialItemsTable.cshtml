@@ -1,0 +1,34 @@
+﻿
+@model IEnumerable<SimpleAuctionSystem.ViewModels.ItemViewModel>
+
+<div class="table-responsive" style="padding-top: 20px;">
+    <table class="table table-bordered table-striped" style="width: 100%;">
+        <thead style="width: 100px !important;">
+            <tr>
+                <th style="width: 100px !important;" class="text-center">Name</th>
+                <th style="width: 100px !important;" class="text-center">Start Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="width: 100px !important;" class="text-center">
+                            @item.ItemName
+                        </td>
+                        <td style="width: 100px !important;" class="text-center">
+                            @item.ItemStartPrice USD
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+
+
+
+

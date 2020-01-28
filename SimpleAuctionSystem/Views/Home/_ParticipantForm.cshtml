@@ -1,0 +1,31 @@
+﻿
+@model SimpleAuctionSystem.ViewModels.ParticipantViewModel
+
+<h2>Add New Item</h2>
+
+@using (Ajax.BeginForm("AddNewParticipant", "Home", new AjaxOptions { OnSuccess = "OnParticipantSuccess", OnFailure = "OnParticipantFailure" }, new { @class = "form-horizontal", @id = "AddnewParticipantForm" }))
+{
+    @Html.HiddenFor(model => model.participantId)
+    <div class="row">
+        <div class="form-group col col-md-6">
+            <label for="ItemName">Item Name <span class="astrek">*</span></label>
+            @Html.TextBoxFor(model => model.ParticipantName, new { @class = "form-control frm", @placeholder = "Enter Participant Name", @id = "ParticipantName" })
+            @Html.ValidationMessageFor(model => model.ParticipantName, null, new { @class = "errorMassage" })
+        </div>
+    </div>
+
+
+    <div align="center" class="row">
+        <div class="col col-sm-8">
+            <button type="submit" style="margin-top:15px; margin-left: 225px" class="btn btn-primary">Add New Participant</button>
+        </div>
+    </div>
+}
+
+
+<script>
+    $(document).ready(function () {
+        $.validator.unobtrusive.parse($("#AddnewParticipantForm"));
+        GetAllParticipants();
+    });
+</script>

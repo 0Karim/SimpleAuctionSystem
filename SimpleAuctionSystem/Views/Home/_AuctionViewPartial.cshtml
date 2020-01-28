@@ -1,0 +1,145 @@
+﻿
+@model SimpleAuctionSystem.ViewModels.AuctionViewModel
+
+<h2>Auction Process</h2>
+
+@*<form id="AuctionForm">*@
+
+@using (Ajax.BeginForm("AddNewAuction", "Home", new AjaxOptions { OnSuccess = "OnAuctionSuccess", OnFailure = "OnAuctionFailure" }, new { @class = "form-horizontal", @id = "AuctionForm"}))
+{
+    <div class="row">
+        <div class="form-group col col-md-6">
+            <label for="ItemId">Select Item<span class="astrek">*</span></label>
+            @Html.DropDownListFor(model => model.ItemId, new SelectList(Model.items, "ItemId", "ItemName"), "Choose Item", new { @class = "form-control", @onchange = "onItemChange(this)" })
+            @Html.ValidationMessageFor(model => model.ItemId, null, new { @class = "errorMassage" })
+        </div>
+
+        <div class="col col-md-6">
+            <input id="ItemStartPrice" name="ItemStartPrice" class="form-control" readonly />
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="form-group col col-md-6">
+            <label for="ParticipantId">Select Participant <span class="astrek">*</span></label>
+            @Html.DropDownListFor(model => model.ParticipantId, new SelectList(Model.participants, "participantId", "ParticipantName"), "Choose Participant"
+            , new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ParticipantId, null, new { @class = "errorMassage" })
+        </div>
+
+        <div class="col col-md-6">
+            <label for="Bid">Enter Bid <span class="astrek">*</span></label>
+            @Html.TextBoxFor(model => model.Bid, new { @class = "form-control frm", @placeholder = "Enter Bid ", @type ="number" , @id = "Bid" , @onchange= "onBidChange(this)" })
+            @Html.ValidationMessageFor(model => model.Bid, null, new { @class = "errorMassage" })
+        </div>
+    </div>
+
+
+    <div align="center" class="row">
+        <div class="col col-sm-8">
+            <button type="submit" id="AddBid" style="margin-top:15px; margin-left: 225px" class="btn btn-primary">Add</button>
+        </div>
+    </div>
+}
+@*</form>*@
+
+<script>
+    $(document).ready(function () {
+        $.validator.unobtrusive.parse($("#AuctionForm"));
+    });
+
+
+    function onItemChange(element)
+    {
+        debugger;
+        var value = element.value;
+        if (value != 0) {
+            $.ajax({
+                url: "/Home/GetItemStartPrice",
+                type: "POST",
+                data: {
+                    itemId: value
+                },
+                success: function (response) {
+                    $('#ItemStartPrice').val(response.price);
+                },
+                error: function (response) {
+                    alert(response.Message);
+                }
+            });
+        } else {
+            $('#ItemStartPrice').val('');
+        }
+    }
+
+    function onBidChange(element)
+    {
+        var value = element.value;
+        var ItemId = $('#ItemId').val();
+        if (value != '') {
+            $.ajax({
+                url: "/Home/GetLastPrice",
+                type: "GET",
+                data: {
+                    Bid: value,
+                    itemId: ItemId
+                },
+                success: function (response) {
+                    debugger;
+                    console.log(response);
+                    if (response.Success === false) {
+                        $('#Bid').val('');
+                        alert('You must Enter a Bid Greater than the last entered Bid !!');
+                    } else {
+                        return true;
+                    }
+                },
+                error: function (response) {
+                    alert(response.Message);
+                }
+            });
+        } else {
+            $('#Bid').val('');
+        }
+    }
+
+
+    function OnAuctionSuccess(response) {
+        debugger;
+        if (response.Success === true) {
+            GetAllAuction();
+            ClearBid();
+        }
+        else {
+            alert(response.Message);
+        }
+    }
+
+    function OnAuctionFailure(response) {
+        alert(response.Message);
+    }
+
+    function ClearBid()
+    {
+        $('#ParticipantId').val('');
+        $('#Bid').val('');
+    }
+
+    function GetAllAuction() {
+        $.ajax({
+            url: "/Home/GetAllAuctionProcess",
+            type: "GET",
+            data: {
+                itemId: $('#ItemId').val()
+            },
+            dataType: "html",
+            success: function (response) {
+                $('#MainTable').html(response);
+            },
+            error: function (response) {
+                alert(response.Message);
+            }
+        })
+    }
+</script>
